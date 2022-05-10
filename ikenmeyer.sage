@@ -28,6 +28,8 @@ for h in g.ConjugacyClassesSubgroups():
             psis.append(psi)
             print ('found')
 
+# next two functions should be identical, second inlines some functions and
+# works with sparse matrices
 def psi_projection(psi):
     M = matrix(UniversalCyclotomicField(),
         catalan_number(n//2),catalan_number(n//2))
@@ -36,7 +38,7 @@ def psi_projection(psi):
             M += e.sage()*matrix_of_perm(g,n)
     return M
 
-def psi_projection2(psi,conj=None):
+def psi_projection_direct(psi,conj=None):
     M = {}
     for Li,L in enumerate(DyckWords(n//2)):
         L = dyck_word_to_pairing(L)
@@ -56,17 +58,7 @@ def psi_projection2(psi,conj=None):
 projs = []
 for psi in psis:
     print (psi)
-    projs.append(psi_projection(psi))
-
-    #     print (conj)
-    #     projs.append(psi_projection(psi,conj.Representative()))
-
-    # S = np.zeros(T.shape,dtype='object')
-    # for e,c in zip(psi,psi.UnderlyingCharacterTable().ConjugacyClasses()):
-    #     for g in c.List():
-    #         S += e.sage()*T.transpose([int(i^g-1) for i in [1..n]])
-    # S /= psi.UnderlyingGroup().Size()
-    # Ss.append(S)
+    projs.append(psi_projection_direct(psi))
 
 Ts = [p.row_space().basis_matrix().list() for p in projs]
 
