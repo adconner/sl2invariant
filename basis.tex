@@ -1,0 +1,119 @@
+% \documentclass[margin=1cm]{standalone}
+
+\documentclass{article}
+\usepackage{parskip}
+\usepackage[margin=1.5cm,right=2.5cm]{geometry}
+
+\usepackage{xargs}
+
+\usepackage{verbatim}
+\usepackage{tikz}
+\usetikzlibrary{arrows,arrows.meta}
+
+\newcommand{\picIV}[1]{%
+\begin{tikzpicture}[scale=1.0, every node/.style={draw,fill=lightgray,circle,inner sep=0pt,minimum size=0.2cm}]
+\draw[lightgray] (0,0) circle (1cm);
+\node (v0) at (0:1) {};
+\node (v1) at (90:1) {};
+\node (v2) at (180:1) {};
+\node (v3) at (270:1) {};
+#1
+\end{tikzpicture}%
+}
+
+\newcommand{\picVI}[1]{%
+\begin{tikzpicture}[scale=1.0, every node/.style={draw,fill=lightgray,circle,inner sep=0pt,minimum size=0.2cm}]
+\draw[lightgray] (0,0) circle (1cm);
+\node (v0) at (0:1) {};
+\node (v1) at (60:1) {};
+\node (v2) at (120:1) {};
+\node (v3) at (180:1) {};
+\node (v4) at (240:1) {};
+\node (v5) at (300:1) {};
+#1
+\end{tikzpicture}%
+}
+
+\newcommand{\picVIII}[1]{%
+\begin{tikzpicture}[scale=1.0, every node/.style={draw,fill=lightgray,circle,inner sep=0pt,minimum size=0.2cm}]
+\draw[lightgray] (0,0) circle (1cm);
+\node (v0) at (0:1) {};
+\node (v1) at (45:1) {};
+\node (v2) at (90:1) {};
+\node (v3) at (135:1) {};
+\node (v4) at (180:1) {};
+\node (v5) at (225:1) {};
+\node (v6) at (270:1) {};
+\node (v7) at (315:1) {};
+#1
+\end{tikzpicture}%
+}
+
+\newcommand{\picX}[1]{%
+\begin{tikzpicture}[scale=1.0, every node/.style={draw,fill=lightgray,circle,inner sep=0pt,minimum size=0.2cm}]
+\draw[lightgray] (0,0) circle (1cm);
+\node (v0) at (0:1) {};
+\node (v1) at (36:1) {};
+\node (v2) at (72:1) {};
+\node (v3) at (108:1) {};
+\node (v4) at (144:1) {};
+\node (v5) at (180:1) {};
+\node (v6) at (216:1) {};
+\node (v7) at (252:1) {};
+\node (v8) at (288:1) {};
+\node (v9) at (324:1) {};
+#1
+\end{tikzpicture}%
+}
+
+\newcommand{\picXII}[1]{%
+\begin{tikzpicture}[scale=1.0, every node/.style={draw,fill=lightgray,circle,inner sep=0pt,minimum size=0.2cm}]
+\draw[lightgray] (0,0) circle (1cm);
+\node (v0) at (0:1) {};
+\node (v1) at (30:1) {};
+\node (v2) at (60:1) {};
+\node (v3) at (90:1) {};
+\node (v4) at (120:1) {};
+\node (v5) at (150:1) {};
+\node (v6) at (180:1) {};
+\node (v7) at (210:1) {};
+\node (v8) at (240:1) {};
+\node (v9) at (270:1) {};
+\node (v10) at (300:1) {};
+\node (v11) at (330:1) {};
+#1
+\end{tikzpicture}%
+}
+
+
+\newcommand{\ar}[2]{%
+\draw[-Triangle] (v#1) -- (v#2);
+}
+
+\newcommand{\rb}[1]{%
+\raisebox{0.9cm}{\ $#1$\ }%
+}
+
+
+
+\begin{document}
+%paste code from the python output here:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\picVIII{\ar{0}{4}\ar{1}{5}\ar{2}{6}\ar{3}{7}}
+\rb{=}
+\rb{+1}\picVIII{\ar{7}{0}\ar{6}{1}\ar{2}{5}\ar{3}{4}}
+\rb{+1}\picVIII{\ar{7}{0}\ar{6}{1}\ar{2}{3}\ar{4}{5}}
+\rb{+1}\picVIII{\ar{0}{3}\ar{1}{2}\ar{4}{5}\ar{6}{7}}
+\rb{+1}\picVIII{\ar{0}{3}\ar{1}{2}\ar{4}{7}\ar{5}{6}}
+\rb{+2}\picVIII{\ar{0}{1}\ar{2}{3}\ar{4}{5}\ar{6}{7}}
+\rb{-2}\picVIII{\ar{7}{0}\ar{1}{2}\ar{3}{4}\ar{5}{6}}
+\rb{+1}\picVIII{\ar{0}{1}\ar{2}{5}\ar{3}{4}\ar{6}{7}}
+\rb{-1}\picVIII{\ar{5}{0}\ar{1}{4}\ar{2}{3}\ar{6}{7}}
+\rb{-1}\picVIII{\ar{5}{0}\ar{1}{2}\ar{3}{4}\ar{6}{7}}
+\rb{-1}\picVIII{\ar{0}{1}\ar{7}{2}\ar{3}{6}\ar{4}{5}}
+\rb{-1}\picVIII{\ar{7}{0}\ar{1}{2}\ar{3}{6}\ar{4}{5}}
+\rb{+1}\picVIII{\ar{0}{1}\ar{2}{3}\ar{4}{7}\ar{5}{6}}
+\rb{-1}\picVIII{\ar{7}{0}\ar{1}{4}\ar{2}{3}\ar{5}{6}}
+\rb{-1}\picVIII{\ar{0}{1}\ar{7}{2}\ar{3}{4}\ar{5}{6}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
