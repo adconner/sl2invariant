@@ -1,4 +1,4 @@
-n = 8
+n = 6
 g = gap.SymmetricGroup([1..n])
 
 load('tensor_utils.sage')
@@ -31,17 +31,31 @@ for h in g.ConjugacyClassesSubgroups():
             psis.append(psi)
             print ('found')
 
+def psi_projection(psi):
+    M = {}
+    for Li,L in enumerate(DyckWords(n//2)):
+        L = dyck_word_to_pairing(L)
+        for e,c in zip(psi,psi.UnderlyingCharacterTable().ConjugacyClasses()):
+            for g in c.List():
+                Lperm = [(int((i+1)^g-1),int((j+1)^g-1)) for i,j in L]
+                cs = Basis(n).expand_uncrossing(Lperm)
+                for w,f in cs.items():
+                    ix = (Li,DyckWords(n//2).rank(pairing_to_dyck_word(w)))
+                    M[ix] = M.get(ix,0) + e*f
+    return matrix(UniversalCyclotomicField(),
+        catalan_number(n//2),catalan_number(n//2), M)
 
-Ss = []
+projs = []
 for psi in psis:
     print (psi)
-    # h = psi.UnderlyingGroup()
-    S = np.zeros(T.shape,dtype='object')
-    for e,c in zip(psi,psi.UnderlyingCharacterTable().ConjugacyClasses()):
-        for g in c.List():
-            S += e.sage()*T.transpose([int(i^g-1) for i in [1..n]])
-    S /= psi.UnderlyingGroup().Size()
-    Ss.append(S)
+    projs.append(psi_projection(psi))
+
+    # S = np.zeros(T.shape,dtype='object')
+    # for e,c in zip(psi,psi.UnderlyingCharacterTable().ConjugacyClasses()):
+    #     for g in c.List():
+    #         S += e.sage()*T.transpose([int(i^g-1) for i in [1..n]])
+    # S /= psi.UnderlyingGroup().Size()
+    # Ss.append(S)
 
 
 
