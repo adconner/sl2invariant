@@ -1,9 +1,6 @@
 n = 6
 g = gap.SymmetricGroup([1..n])
 
-load('tensor_utils.sage')
-
-
 # character of the SL2 invariants in (C2)^n, from schur weyl duality we obtain
 # this from the two row and n/2 column representation
 tbl = gap.CharacterTable('\"symmetric\"',n)
@@ -76,9 +73,9 @@ Ts = [p.row_space().basis_matrix().list() for p in projs]
 rep = gap.GroupHomomorphismByImages(g,[ matrix_of_perm(e,n)
     for e in g.GeneratorsOfGroup()])
 
-Tsall = gap.Orbits(rep.Image(),Ts,gap.OnLines)
-
-
+Tsall = gap.Orbits(rep.Image(),Ts,gap.OnLines).sage()
+stabs = [gap.Stabilizer(g,o[0],g.GeneratorsOfGroup(),
+    [e^rep for e in g.GeneratorsOfGroup()], gap.OnLines) for o in Tsall]
 
 
 
