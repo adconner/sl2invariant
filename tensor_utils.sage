@@ -54,6 +54,7 @@ def as_linear_combination(T):
     M = matrix([list(S.ravel()) for _,S in B]).T
     return [(e,B[i][0]) for i,e in M.solve_right(vector(T.ravel())).dict().items()]
 
+# This matrix acts on the right (ie, on row vectors), to agree with gap's convention
 def matrix_of_perm(g,n):
     M = matrix(UniversalCyclotomicField(),
         catalan_number(n//2),catalan_number(n//2))
@@ -62,7 +63,7 @@ def matrix_of_perm(g,n):
         Lperm = tuple([(int((i+1)^g-1),int((j+1)^g-1)) for i,j in L])
         cs = Basis(n).expand_uncrossing(Lperm)
         for w,f in cs.items():
-            M[DyckWords(n//2).rank(pairing_to_dyck_word(w)),Li] += f
+            M[Li,DyckWords(n//2).rank(pairing_to_dyck_word(w))] += f
     return M
 
 # vim: ft=python

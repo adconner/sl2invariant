@@ -60,7 +60,7 @@ projs = []
 for psi in psis:
     print (psi)
     projs.append(psi_projection(psi))
-    # for conj in g.RightCosets(psi.UnderlyingGroup()):
+
     #     print (conj)
     #     projs.append(psi_projection(psi,conj.Representative()))
 
@@ -70,6 +70,14 @@ for psi in psis:
     #         S += e.sage()*T.transpose([int(i^g-1) for i in [1..n]])
     # S /= psi.UnderlyingGroup().Size()
     # Ss.append(S)
+
+Ts = [p.row_space().basis_matrix().list() for p in projs]
+
+rep = gap.GroupHomomorphismByImages(g,[ matrix_of_perm(e,n)
+    for e in g.GeneratorsOfGroup()])
+
+Tsall = gap.Orbits(rep.Image(),Ts,gap.OnLines)
+
 
 
 
