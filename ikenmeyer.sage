@@ -1,5 +1,7 @@
-n = 6
+n = 8
 g = gap.SymmetricGroup([1..n])
+
+load('tensor_utils.sage')
 
 
 # character of the SL2 invariants in (C2)^n, from schur weyl duality we obtain
@@ -29,12 +31,6 @@ for h in g.ConjugacyClassesSubgroups():
             psis.append(psi)
             print ('found')
 
-import numpy as np
-arr = np.zeros((2,2),dtype='object')
-arr[0,1] = 1
-arr[1,0] = -1
-
-T = reduce(lambda a,b: np.tensordot(a,b,0),[arr]*(n//2))
 
 Ss = []
 for psi in psis:
