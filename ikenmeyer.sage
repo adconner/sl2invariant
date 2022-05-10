@@ -32,11 +32,21 @@ for h in g.ConjugacyClassesSubgroups():
             print ('found')
 
 def psi_projection(psi):
+    M = matrix(UniversalCyclotomicField(),
+        catalan_number(n//2),catalan_number(n//2))
+    for e,c in zip(psi,psi.UnderlyingCharacterTable().ConjugacyClasses()):
+        for g in c.List():
+            M += e.sage()*matrix_of_perm(g,n)
+    return M
+
+def psi_projection2(psi,conj=None):
     M = {}
     for Li,L in enumerate(DyckWords(n//2)):
         L = dyck_word_to_pairing(L)
         for e,c in zip(psi,psi.UnderlyingCharacterTable().ConjugacyClasses()):
             for g in c.List():
+                if conj is not None:
+                    conj.Inverse()*g*conj
                 Lperm = [(int((i+1)^g-1),int((j+1)^g-1)) for i,j in L]
                 cs = Basis(n).expand_uncrossing(Lperm)
                 for w,f in cs.items():
@@ -45,10 +55,14 @@ def psi_projection(psi):
     return matrix(UniversalCyclotomicField(),
         catalan_number(n//2),catalan_number(n//2), M)
 
+
 projs = []
 for psi in psis:
     print (psi)
     projs.append(psi_projection(psi))
+    # for conj in g.RightCosets(psi.UnderlyingGroup()):
+    #     print (conj)
+    #     projs.append(psi_projection(psi,conj.Representative()))
 
     # S = np.zeros(T.shape,dtype='object')
     # for e,c in zip(psi,psi.UnderlyingCharacterTable().ConjugacyClasses()):
