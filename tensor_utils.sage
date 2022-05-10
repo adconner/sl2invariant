@@ -6,7 +6,7 @@ def dyck_word_to_pairing(w):
         j = w.associated_parenthesis(i)
         if j > i:
             out.append((i,j))
-    return out
+    return tuple(out)
 
 def pairing_to_dyck_word(L):
     w = [None]*(len(L)*2)
@@ -41,7 +41,7 @@ def tensor_to_pairing(T):
         check.remove(j)
         pairs.append((i,j))
     pairs.sort()
-    return pairs
+    return tuple(pairs)
 
 def basis_vectors(n):
     basis = {}
