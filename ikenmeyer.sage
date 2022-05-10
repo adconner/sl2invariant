@@ -20,14 +20,14 @@ chifull = g.ClassFunction([
 psis = []
 for h in g.ConjugacyClassesSubgroups():
     h = h.Representative()
-    print h
+    print(h)
     for psi in h.LinearCharacters():
-        print psi
+        print (psi)
         mult = gap.ScalarProduct(gap.RestrictedClassFunction(chi,h),psi)
-        print mult
+        print (mult)
         if mult == 1:
             psis.append(psi)
-            print 'found'
+            print ('found')
 
 import numpy as np
 arr = np.zeros((2,2),dtype='object')
@@ -38,7 +38,7 @@ T = reduce(lambda a,b: np.tensordot(a,b,0),[arr]*(n//2))
 
 Ss = []
 for psi in psis:
-    print psi
+    print (psi)
     # h = psi.UnderlyingGroup()
     S = np.zeros(T.shape,dtype='object')
     for e,c in zip(psi,psi.UnderlyingCharacterTable().ConjugacyClasses()):
