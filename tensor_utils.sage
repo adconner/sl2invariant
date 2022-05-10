@@ -49,5 +49,9 @@ def basis_vectors(n):
         basis[w] = pairing_to_tensor(dyck_word_to_pairing(w))
     return basis
 
+def as_linear_combination(T):
+    B = basis_vectors(len(T.shape)).items()
+    M = matrix([list(S.ravel()) for _,S in B]).T
+    return [(e,B[i][0]) for i,e in M.solve_right(vector(T.ravel())).dict().items()]
 
 # vim: ft=python
