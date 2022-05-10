@@ -163,28 +163,41 @@ def done_single(L):
       return False
   return True
   
+def expand_uncrossing(L):
+    cs = {L:1}
+    while True:
+        done = True
+        for L in cs.keys():
+            if not done_single(L):
+                oldcoeff = cs[L]
+                found = {L:-oldcoeff}
+                cs = sum_up_lincombs(cs,found)
+                cs = sum_up_lincombs(cs,expansion_step(L,oldcoeff))
+                done = False
+                break
+        if done:
+            break
+    cs_normalized = {}
+    for P,e in cs.items():
+        Pnorm = []
+        enorm = e
+        for (i,j) in P:
+            if i < j:
+                Pnorm.append((i,j))
+            else:
+                Pnorm.append((j,i))
+                enorm = -enorm
+        Pnorm.sort()
+        cs_normalized[tuple(Pnorm)] = enorm
+    return cs_normalized
 
 
 print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
 print(tikz_single(L))
 print("\\rb{=}")
 
-dic = {L:1}
-while True:
-  #print(tikz_lincomb(dic))
-  #print("\\\\\\rb{=}")
-  done = True
-  for L in dic.keys():
-    if not done_single(L):
-      oldcoeff = dic[L]
-      found = {L:-oldcoeff}
-      dic = sum_up_lincombs(dic,found)
-      dic = sum_up_lincombs(dic,expansion_step(L,oldcoeff))
-      done = False
-      break
-  if done:
-    break
+cs = expand_uncrossing(L)
 
-print(tikz_lincomb(dic))
+print(tikz_lincomb(cs))
 print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
 
