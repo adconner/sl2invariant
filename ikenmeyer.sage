@@ -70,14 +70,34 @@ for psi in psis:
 
 Ts = [p.row_space().basis_matrix().list() for p in projs]
 
-rep = gap.GroupHomomorphismByImages(g,[ matrix_of_perm(e,n)
+rep = gap.GroupHomomorphismByImages(g,[matrix_of_perm(e,n)
     for e in g.GeneratorsOfGroup()])
 
+gens = g.GeneratorsOfGroup()
+acts = [e^rep for e in g.GeneratorsOfGroup()]
+
+print("removing duplicates (Sn-conjugates)")
+Ts_by_stab = {}
+for T in Ts:
+    stab = gap.Stabilizer(g,T,gens,acts,gap.OnLines)
+    Ts_by_stab.setdefault(int(stab.Size()),[]).append((T,stab))
+Ts_dedup = []
+for _,THs in sorted(Ts_by_stab.items(),key=lambda p: -p[0]):
+    for i,(T,stab) in enumerate(THs):
+        occ_later = False
+        for S,_ in THs[i+1:]:
+            # IsBool <-> fail here
+            if not g.RepresentativeAction(T,S,gens,acts,gap.OnLines).IsBool():
+                occ_later = True
+                break
+        if not occ_later:
+            Ts_dedup.append(T)
+
+print("all orbits, very slow n>6")
 Tsall = gap.Orbits(rep.Image(),Ts,gap.OnLines).sage()
-stabs = [gap.Stabilizer(g,o[0],g.GeneratorsOfGroup(),
-    [e^rep for e in g.GeneratorsOfGroup()], gap.OnLines) for o in Tsall]
+stabs = [gap.Stabilizer(g,o[0],gens,acts,gap.OnLines) for o in Tsall]
 
-
-
+# M = matrix([T for o in Tsall for T in o])
+# M = M.change_ring(CyclotomicField(5*4*3))
 
 # vim: ft=python
