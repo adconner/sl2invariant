@@ -66,4 +66,11 @@ def matrix_of_perm(g,n):
             M[Li,DyckWords(n//2).rank(pairing_to_dyck_word(w))] += f
     return M
 
+# T is list of coefficients with respect to DyckWords in sage
+def to_sl2_inv_tensor(T,n):
+    ps = [(c,pairing_to_tensor(dyck_word_to_pairing(w))) 
+        for w,c in zip(DyckWords(n//2),T) if c != 0]
+    return np.sum(np.array([c for c,S in ps]).reshape((-1,)+(1,)*n) * np.array([S for
+        c,S in ps]),axis=0)
+
 # vim: ft=python
