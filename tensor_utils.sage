@@ -73,4 +73,7 @@ def to_sl2_inv_tensor(T,n):
     return np.sum(np.array([c for c,S in ps]).reshape((-1,)+(1,)*n) * np.array([S for
         c,S in ps]),axis=0)
 
+def to_three_place(T,n):
+    return map(matrix,to_sl2_inv_tensor(T,n).reshape(2**(n//3),2**(n//3),2**(n//3)))
+
 # vim: ft=python
