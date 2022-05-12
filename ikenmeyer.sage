@@ -1,5 +1,6 @@
 n = 6
 g = gap.SymmetricGroup([1..n])
+load('all.sage')
 
 # character of the SL2 invariants in (C2)^n, from schur weyl duality we obtain
 # this from the two row and n/2 column representation
@@ -16,17 +17,58 @@ chifull = g.ClassFunction([
     2**(n-int(r.NrMovedPoints())+ r.CycleStructurePerm().SortedList().Sum())
             for c in g.CharacterTable().ConjugacyClasses() for r in [c.Representative()]])
 
+# psis = []
+# for h in g.ConjugacyClassesSubgroups():
+#     h = h.Representative()
+#     print(h)
+#     for psi in h.LinearCharacters():
+#         print (psi)
+#         mult = gap.ScalarProduct(gap.RestrictedClassFunction(chi,h),psi)
+#         print (mult)
+#         if mult == 1:
+#             psis.append(psi)
+#             print ('found')
+
+# lat = g.LatticeSubgroups()
+# minsup = lat.MinimalSupergroupsLattice().sage()
+# lat_graph = DiGraph()
+# for i,above in enumerate(minsup):
+#     for j,_ in above:
+#         lat_graph.add_edge(i+1,j)
+
+# psis = []
+# for i in lat_graph.topological_sort()[::-1]:
+#     h = lat.ConjugacyClassesSubgroups()[i].Representative()
+
 psis = []
-for h in g.ConjugacyClassesSubgroups():
+for h in sorted(g.ConjugacyClassesSubgroups(),key=lambda h: -h.Representative().Size()):
     h = h.Representative()
-    print(h)
-    for psi in h.LinearCharacters():
-        print (psi)
+    print 'hsize',h.Size()
+    for psio in gap.OrbitsDomain(g.Normalizer(h),h.LinearCharacters()):
+        psi = psio[1] 
+        # check one linear character in each conjugacy class of the normalizer
+        print psi
         mult = gap.ScalarProduct(gap.RestrictedClassFunction(chi,h),psi)
-        print (mult)
-        if mult == 1:
+        if mult != 1:
+            continue
+        print mult
+        already = False
+        for psiother in psio:
+            for psi2 in psis:
+                k = psi2.UnderlyingGroup()
+                for _,x in gap.ContainedConjugates(g,k,h):
+                    if all((clr^x)^psi2 == clr^psiother for cl in
+                            h.ConjugacyClasses() for clr in [cl.Representative()]):
+                        already = True
+                        break
+                if already:
+                    break
+            if already:
+                break
+        if not already:
             psis.append(psi)
-            print ('found')
+            print 'psis',len(psis)
+
 
 # next two functions should be identical, second inlines some functions and
 # works with sparse matrices
@@ -85,9 +127,9 @@ for _,THs in sorted(Ts_by_stab.items(),key=lambda p: -p[0]):
         if not occ_later:
             Ts_dedup.append(T)
 
-print("all orbits, very slow n>6")
-Tsall = gap.Orbits(rep.Image(),Ts,gap.OnLines).sage()
-stabs = [gap.Stabilizer(g,o[0],gens,acts,gap.OnLines) for o in Tsall]
+# print("all orbits, very slow n>6")
+# Tsall = gap.Orbits(rep.Image(),Ts,gap.OnLines).sage()
+# stabs = [gap.Stabilizer(g,o[0],gens,acts,gap.OnLines) for o in Tsall]
 
 # M = matrix([T for o in Tsall for T in o])
 # M = M.change_ring(CyclotomicField(5*4*3))
