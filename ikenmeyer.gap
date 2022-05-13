@@ -1,37 +1,59 @@
-# n Length(hs)
-# 2 1
-# 3 0
-# 4 4
-# 5 0
-# 6 13
-# 7 0
-# 8 40
-# 9 0
-# 10 117
-# 12 525
+SL2DeterminedByStabilizer := function (n)
+    local g,h,tbl,chiix,chi,psis,psisl,hs,psio,psi,mult,already,psi2i,psi2,k,p,x;
+    g := SymmetricGroup(n);
 
-n := 6;
-g := SymmetricGroup(n);
+    tbl := CharacterTable("symmetric",n);
+    chiix := Position(CharacterParameters(tbl),[1,[n/2,n/2]]);
+    # strictly speaking maybe we should use CompatibleConjugacyClasses to match up
+    # the columns of tbl with those of the character table of g. I think gap
+    # computes that for a known symmetric group this way anyway, so there is no
+    # issue
+    chi := Irr(g)[chiix];
 
-chi := ClassFunction(g, List(List(ConjugacyClasses(g),Representative),r->
-            2^(n-NrMovedPoints(r)+Sum(SortedList(CycleStructurePerm(r))))));
-
-hs := [];
-for h in ConjugacyClassesSubgroups(g) do
-    h := Representative(h);
-    Print(h,"\n");
-    for psi in Irr(h) do
-        if psi[1] = 1 then
+    psis := [];
+    psisl := [];
+    hs := List(ConjugacyClassesSubgroups(g),Representative);
+    SortBy(hs, h -> -Size(h));
+    for h in hs do
+        Print("size ",Size(h),"\n");
+        for psio in OrbitsDomain(Normalizer(g,h),LinearCharacters(h)) do
+            psi := psio[1];
+            Print(psi,"\n");
             mult := ScalarProduct(RestrictedClassFunction(chi,h),psi);
-            Print(psi," ",mult,"\n");
-            if mult = 1 then
-                Add(hs,psi); # psi remembers h: h = UnderlyingGroup(psi)
+            if mult <> 1 then
+                continue;
             fi;
-        fi;
-    od;
-    Print(h,"\n");
-od;
+            Print("found, checking if duplicate...\n");
+            already := false;
+            for psi2i in [1..Length(psis)] do
+                psi2 := psis[psi2i];
+                k := UnderlyingGroup(psi2);
+                if not IsSubsetSet(psi2,psi) then
+                    continue;
+                fi;
+                for p in ContainedConjugates(g,k,h) do
+                    x := p[2];
+                    if ForAny(psio,psiother->
+                            ForAll(List(ConjugacyClasses(h),Representative),
+                            clr->(clr^x)^psi2 = clr^psiother)) then
+                        psisl[psi2i] := [psi,x];
+                        already := true;
+                        break;
+                    fi;
 
-Print(Length(hs),"\n");
+                od;
+                if already then
+                    break;
+                fi;
+            od;
+            if not already then
+                Add(psis,psi);
+                Add(psisl,[psi,()]);
+                Print("adding to set, now have ",Length(psis),"\n");
+            fi;
+        od;
+    od;
+    return [psis,psisl];
+end;
 
 # vim: ft=python
