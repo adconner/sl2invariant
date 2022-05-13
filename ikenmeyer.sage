@@ -53,10 +53,10 @@ for h in sorted(g.ConjugacyClassesSubgroups(),key=lambda h: -h.Representative().
             continue
         print mult
         already = False
-        for psiother in psio:
-            for psi2 in psis:
-                k = psi2.UnderlyingGroup()
-                for _,x in gap.ContainedConjugates(g,k,h):
+        for psi2 in psis:
+            k = psi2.UnderlyingGroup()
+            for _,x in gap.ContainedConjugates(g,k,h):
+                for psiother in psio:
                     if all((clr^x)^psi2 == clr^psiother for cl in
                             h.ConjugacyClasses() for clr in [cl.Representative()]):
                         already = True
