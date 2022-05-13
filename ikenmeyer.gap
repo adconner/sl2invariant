@@ -1,5 +1,5 @@
 SL2DeterminedByStabilizer := function (n)
-    local g,h,cc_cache,tbl,chiix,chi,psis,psisl,hs,psio,psi,mult,already,psi2i,psi2,k,p,x;
+    local g,hi,h,cc_cache,tbl,chiix,chi,psis,psisl,hs,psio,psi,mult,already,psi2i,psi2,k,p,x;
     g := SymmetricGroup(n);
 
     tbl := CharacterTable("symmetric",n);
@@ -14,17 +14,18 @@ SL2DeterminedByStabilizer := function (n)
     psisl := [];
     hs := List(ConjugacyClassesSubgroups(g),Representative);
     SortBy(hs, h -> -Size(h));
-    for h in hs do
-        Print("size ",Size(h),"\n");
+    for hi in [1..Size(hs)] do
+        h := hs[hi];
+        Print(hi,"/",Size(hs),": size ",Size(h),", ",Length(psis)," found\n");
         cc_cache := [];
         for psio in OrbitsDomain(Normalizer(g,h),LinearCharacters(h)) do
             psi := psio[1];
-            Print(psi,"\n");
+            # Print(psi,"\n");
             mult := ScalarProduct(RestrictedClassFunction(chi,h),psi);
             if mult <> 1 then
                 continue;
             fi;
-            Print("found, checking if duplicate...\n");
+            Print("found, checking if duplicate...\c");
             already := false;
             for psi2i in [1..Length(psis)] do
                 psi2 := psis[psi2i];
@@ -33,7 +34,9 @@ SL2DeterminedByStabilizer := function (n)
                     continue;
                 fi;
                 if not IsBound(cc_cache[psi2i]) then
+                    Print("*\c");
                     cc_cache[psi2i] := ContainedConjugates(g,k,h);
+                    Print(".\c");
                 fi;
                 for p in cc_cache[psi2i] do
                     x := p[2];
@@ -41,6 +44,7 @@ SL2DeterminedByStabilizer := function (n)
                             ForAll(List(ConjugacyClasses(h),Representative),
                             clr->(clr^x)^psi2 = clr^psiother)) then
                         psisl[psi2i] := [psi,x];
+                        Print(" yes\n");
                         already := true;
                         break;
                     fi;
@@ -53,7 +57,7 @@ SL2DeterminedByStabilizer := function (n)
             if not already then
                 Add(psis,psi);
                 Add(psisl,[psi,()]);
-                Print("adding to set, now have ",Length(psis),"\n");
+                Print(" no\n");
             fi;
         od;
     od;
