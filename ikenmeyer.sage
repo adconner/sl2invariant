@@ -45,6 +45,7 @@ psisl = []
 for h in sorted(g.ConjugacyClassesSubgroups(),key=lambda h: -h.Representative().Size()):
     h = h.Representative()
     print 'hsize',h.Size()
+    e_already = [] # just to avoid redundant computation
     for psio in gap.OrbitsDomain(g.Normalizer(h),h.LinearCharacters()):
         psi = psio[1] 
         # check one linear character in each conjugacy class of the normalizer
@@ -56,7 +57,10 @@ for h in sorted(g.ConjugacyClassesSubgroups(),key=lambda h: -h.Representative().
         already = False
         for psi2i,psi2 in enumerate(psis):
             k = psi2.UnderlyingGroup()
-            for _,x in gap.ContainedConjugates(g,k,h):
+            assert len(e_already) >= psi2i
+            if len(e_already) == psi2i:
+                e_already.append(gap.ContainedConjugates(g,k,h))
+            for _,x in e_already[psi2i]:
                 for psiother in psio:
                     if all((clr^x)^psi2 == clr^psiother for cl in
                             h.ConjugacyClasses() for clr in [cl.Representative()]):
