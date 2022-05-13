@@ -41,6 +41,7 @@ chifull = g.ClassFunction([
 #     h = lat.ConjugacyClassesSubgroups()[i].Representative()
 
 psis = []
+psisl = []
 for h in sorted(g.ConjugacyClassesSubgroups(),key=lambda h: -h.Representative().Size()):
     h = h.Representative()
     print 'hsize',h.Size()
@@ -53,12 +54,13 @@ for h in sorted(g.ConjugacyClassesSubgroups(),key=lambda h: -h.Representative().
             continue
         print mult
         already = False
-        for psi2 in psis:
+        for psi2i,psi2 in enumerate(psis):
             k = psi2.UnderlyingGroup()
             for _,x in gap.ContainedConjugates(g,k,h):
                 for psiother in psio:
                     if all((clr^x)^psi2 == clr^psiother for cl in
                             h.ConjugacyClasses() for clr in [cl.Representative()]):
+                        psisl[psi2i] = psi
                         already = True
                         break
                 if already:
@@ -67,6 +69,7 @@ for h in sorted(g.ConjugacyClassesSubgroups(),key=lambda h: -h.Representative().
                 break
         if not already:
             psis.append(psi)
+            psisl.append(psi)
             print 'psis',len(psis)
 
 
@@ -98,7 +101,7 @@ def psi_projection_direct(psi,conj=None):
 
 
 projs = []
-for psi in psis:
+for psi in psisl:
     print (psi)
     projs.append(psi_projection_direct(psi))
 
@@ -127,11 +130,11 @@ for _,THs in sorted(Ts_by_stab.items(),key=lambda p: -p[0]):
         if not occ_later:
             Ts_dedup.append(T)
 
-# print("all orbits, very slow n>6")
-# Tsall = gap.Orbits(rep.Image(),Ts,gap.OnLines).sage()
-# stabs = [gap.Stabilizer(g,o[0],gens,acts,gap.OnLines) for o in Tsall]
+# # print("all orbits, very slow n>6")
+# # Tsall = gap.Orbits(rep.Image(),Ts,gap.OnLines).sage()
+# # stabs = [gap.Stabilizer(g,o[0],gens,acts,gap.OnLines) for o in Tsall]
 
-# M = matrix([T for o in Tsall for T in o])
-# M = M.change_ring(CyclotomicField(5*4*3))
+# # M = matrix([T for o in Tsall for T in o])
+# # M = M.change_ring(CyclotomicField(5*4*3))
 
 # vim: ft=python
