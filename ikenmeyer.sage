@@ -62,17 +62,11 @@ for h in sorted(g.ConjugacyClassesSubgroups(),key=lambda h: -h.Representative().
             if psi2i not in e_already:
                 e_already[psi2i] = gap.ContainedConjugates(g,k,h)
             for _,x in e_already[psi2i]:
-                for psiother in psio:
-                    # pure gap for performance reasons
-                    if gap('ForAll(List(ConjugacyClasses(%s),Representative),clr->(clr^%s)^%s = clr^%s)' %\
-                                    (h.name(),x.name(),psi2.name(),psiother.name())):
-                    # # equivalent to 
-                    # if all((clr^x)^psi2 == clr^psiother for cl in
-                    #         h.ConjugacyClasses() for clr in [cl.Representative()]):
-                        psisl[psi2i] = (psi,x)
-                        already = True
-                        break
-                if already:
+                # pure gap for performance reasons
+                if gap('ForAny(%s,psiother->ForAll(List(ConjugacyClasses(%s),Representative),clr->(clr^%s)^%s = clr^psiother))' %\
+                                (psio.name(),h.name(),x.name(),psi2.name())):
+                    psisl[psi2i] = (psi,x)
+                    already = True
                     break
             if already:
                 break
