@@ -64,7 +64,7 @@ for h in sorted(g.ConjugacyClassesSubgroups(),key=lambda h: -h.Representative().
                 for psiother in psio:
                     if all((clr^x)^psi2 == clr^psiother for cl in
                             h.ConjugacyClasses() for clr in [cl.Representative()]):
-                        psisl[psi2i] = psi
+                        psisl[psi2i] = (psi,x)
                         already = True
                         break
                 if already:
