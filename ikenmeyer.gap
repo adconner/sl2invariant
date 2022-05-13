@@ -1,5 +1,5 @@
 SL2DeterminedByStabilizer := function (n)
-    local g,h,tbl,chiix,chi,psis,psisl,hs,psio,psi,mult,already,psi2i,psi2,k,p,x;
+    local g,h,cc_cache,tbl,chiix,chi,psis,psisl,hs,psio,psi,mult,already,psi2i,psi2,k,p,x;
     g := SymmetricGroup(n);
 
     tbl := CharacterTable("symmetric",n);
@@ -16,6 +16,7 @@ SL2DeterminedByStabilizer := function (n)
     SortBy(hs, h -> -Size(h));
     for h in hs do
         Print("size ",Size(h),"\n");
+        cc_cache := [];
         for psio in OrbitsDomain(Normalizer(g,h),LinearCharacters(h)) do
             psi := psio[1];
             Print(psi,"\n");
@@ -31,7 +32,10 @@ SL2DeterminedByStabilizer := function (n)
                 if not IsSubsetSet(psi2,psi) then
                     continue;
                 fi;
-                for p in ContainedConjugates(g,k,h) do
+                if not IsBound(cc_cache[psi2i]) then
+                    cc_cache[psi2i] := ContainedConjugates(g,k,h);
+                fi;
+                for p in cc_cache[psi2i] do
                     x := p[2];
                     if ForAny(psio,psiother->
                             ForAll(List(ConjugacyClasses(h),Representative),
