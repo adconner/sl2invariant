@@ -64,4 +64,45 @@ SL2DeterminedByStabilizer := function (n)
     return [psis,psisl];
 end;
 
+CheckUnique := function(psis,n)
+    local g,ok,psii,hi,h,cc_cache,tbl,chiix,chi,psisl,hs,psio,psi,mult,already,psi2i,psi2,k,p,x;
+    g := SymmetricGroup(n);
+
+    tbl := CharacterTable("symmetric",n);
+    chiix := Position(CharacterParameters(tbl),[1,[n/2,n/2]]);
+    # strictly speaking maybe we should use CompatibleConjugacyClasses to match up
+    # the columns of tbl with those of the character table of g. I think gap
+    # computes that for a known symmetric group this way anyway, so there is no
+    # issue
+    chi := Irr(g)[chiix];
+
+    ok := true;
+
+    for psii in [1..Length(psis)] do
+        psi := psis[psii];
+        h := UnderlyingGroup(psi);
+        if ScalarProduct(RestrictedClassFunction(chi,h),psi) <> 1 then
+            Print("fail 1 ",psii,"\n");
+            ok := false;
+        fi;
+
+        for psi2i in [1..psii-1] do
+            psi2 := psis[psi2i];
+            k := UnderlyingGroup(psi2);
+            for p in ContainedConjugates(g,h,k) do
+                x := p[2];
+                if ForAny(Orbit(Normalizer(g,h),psi),psiother->
+                        ForAll(List(ConjugacyClasses(h),Representative),
+                        clr->(clr^x)^psi2 = clr^psiother)) then
+                    Print("fail 2 ",psii," ",psi2i,"\n");
+                    ok := false;
+                fi;
+
+            od;
+        od;
+    od;
+    return ok;
+end;
+
+
 # vim: ft=python
