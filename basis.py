@@ -1,6 +1,6 @@
 
-V = 8 
-L = ((0,4),(1,5),(2,6),(3,7))
+# V = 8 
+# L = ((0,4),(1,5),(2,6),(3,7))
 
 
 #V = 12
@@ -199,4 +199,4 @@ class Basis():
         print(self.tikz_lincomb(cs))
         print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
 
-Basis(V).print_latex(L)
+# Basis(V).print_latex(L)
