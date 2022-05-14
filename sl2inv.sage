@@ -49,10 +49,10 @@ def psi_projection_direct(psi,conj=None):
         catalan_number(n//2),catalan_number(n//2), M)
 
 def psi_row_space_direct(psi):
-    print 'group size',psi.UnderlyingGroup().Size()
+    print('group size',psi.UnderlyingGroup().Size())
     for L in DyckWords(n//2):
     # for L in sorted(DyckWords(n//2),key=lambda _: RDF.random_element()):
-        print L
+        print(L)
         L = dyck_word_to_pairing(L)
         vec = vector(UniversalCyclotomicField(),catalan_number(n//2))
         for e,c in zip(psi,psi.UnderlyingCharacterTable().ConjugacyClasses()):
@@ -67,7 +67,7 @@ def psi_row_space_direct(psi):
 
 Ts = []
 for i,(psi,x) in enumerate(psisl):
-    print (i,psi)
+    print(i,psi)
     Ts.append(psi_row_space_direct(psi))
 
 
