@@ -77,6 +77,6 @@ def to_sl2_inv_tensor(T):
 
 def to_three_place(T):
     n = next(2*k for k in range(len(T)+1) if catalan_number(k) == len(T))
-    return map(matrix,to_sl2_inv_tensor(T).reshape(2**(n//3),2**(n//3),2**(n//3)))
+    return list(map(matrix,to_sl2_inv_tensor(T).reshape(2**(n//3),2**(n//3),2**(n//3))))
 
 # vim: ft=python
